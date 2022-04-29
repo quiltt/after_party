@@ -3,14 +3,15 @@ namespace :after_party do
   task <%= file_name %>: :environment do
     puts "Running deploy task '<%= file_name %>'"
 
-    # Wrap your code in a transaction to ensure the database is not left in a bad
-    #  state if the task fails and the release is rolled back.
-    ActiveRecord::Base.transaction do
-      # Put your task implementation HERE.
-    end
+    # Put your task implementation HERE.
+    #  Consider wrapping your code in a transaction if the task failing could
+    #  leave the database in a bad state, since the release will also fail.
+    # ActiveRecord::Base.transaction do
+      # ...
+    # end
 
-    # Update task as completed. If you remove the line below, the task will
-    #  run with every deploy (or every time you call `after_party:run`).
+    # Update task as completed. Removing the line below will make the
+    #  task run with every deploy (or every time `after_party:run` is called).
     AfterParty::TaskRecord.create(
       version: AfterParty::TaskRecorder.new(__FILE__).timestamp
     )
